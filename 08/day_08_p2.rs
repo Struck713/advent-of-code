@@ -4,9 +4,7 @@ use std::vec::Vec;
 use std::time::SystemTime;
 use std::collections::HashMap;
 
-fn main() {
-    let program_start = SystemTime::now();
-    
+fn main() {    
     let file_path = "day8.input";
     let file = fs::read_to_string(file_path).unwrap();
     
@@ -32,37 +30,38 @@ fn main() {
         index += 1;
     }
     
-    let mut index: usize = 0;
-    let mut score: u64 = 0;
-    let size = nodes.len();
-    loop {
-        if index >= input.len() {
-            index = 0;
+    // This video was super helpful to solve this: https://www.youtube.com/watch?v=_nnxLcrwO_U
+    let mut nums: Vec<u64> = Vec::new();
+    for mut node in nodes {
+        let mut index: usize = 0;
+        let mut steps: u64 = 0;
+        while steps == 0 || !node.ends_with("Z") {
+            steps += 1;
+            
+            let (left, right) = map.get(&node).unwrap();
+            node = if &input[index..index+1] == "L" { left } else { right };
+            index = if index + 1 >= input.len() { 0 } else { index + 1 };
         }
-
-        if nodes.iter().all(|x| x.ends_with("Z")) {
-            break;
-        }
-
-        let instruction = &input[index..index + 1];
-        if instruction == "L" {
-            for node_index in 0..size {
-                let (left, _) = map.get(nodes[node_index]).unwrap();
-                nodes[node_index] = left;
-            }
-        } else {
-            for node_index in 0..size {
-                let (_, right) = map.get(nodes[node_index]).unwrap();
-                nodes[node_index] = right;
-            }
-        }
-
-        score += 1;
-        index += 1;
+        
+        nums.push(steps);
+    }
+    
+    let mut score: u64 = nums.pop().unwrap();
+    for num in nums {
+        score = (score * num) / gcd(score, num);
     }
 
-    println!(":: Score: {score}");
-    if let Ok(elapsed) = program_start.elapsed() {
-        println!(":: Program finished in {}s", elapsed.as_secs());
+    println!("Score: {score}");
+}
+
+// https://gist.github.com/victor-iyi/8a84185c1d52419b0d4915a648d5e3e1
+pub fn gcd(mut n: u64, mut m: u64) -> u64 {
+    assert!(n != 0 && m != 0);
+    while m != 0 {
+      if m < n {
+        std::mem::swap(&mut m, &mut n);
+      }
+      m %= n;
     }
+    n
 }

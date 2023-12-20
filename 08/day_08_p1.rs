@@ -1,12 +1,9 @@
 
 use std::fs;
 use std::vec::Vec;
-use std::time::SystemTime;
 use std::collections::HashMap;
 
 fn main() {
-    let program_start = SystemTime::now();
-    
     let file_path = "day8.input";
     let file = fs::read_to_string(file_path).unwrap();
     
@@ -35,7 +32,6 @@ fn main() {
             index = 0;
         }
 
-        println!("\"{current}\"");
         if current == "ZZZ" {
             break;
         }
@@ -52,8 +48,5 @@ fn main() {
         index += 1;
     }
 
-    println!(":: Score: {score}");
-    if let Ok(elapsed) = program_start.elapsed() {
-        println!(":: Program finished in {}s", elapsed.as_secs());
-    }
+    println!("Score: {score}");
 }
