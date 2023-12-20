@@ -18,11 +18,25 @@ fn main() {
         let hand_parts = line.split_whitespace().collect::<Vec<&str>>();
 
         let mut card_map = HashMap::new();
+        let mut jokers = 0;
         for card in hand_parts[0].chars() {
-            card_map.entry(card)
-                .and_modify(|e| *e += 1)
-                .or_insert(1);
+            if card == 'J' { 
+                jokers += 1;
+            } else {
+                card_map.entry(card)
+                    .and_modify(|e| *e += 1)
+                    .or_insert(1);
+            }
         }
+
+        if let Some((max_key, _)) = card_map.iter().max_by_key(|entry | entry.1) {
+            card_map.entry(*max_key)
+                .and_modify(|e| *e += jokers)
+                .or_insert(jokers);
+        } else {
+            card_map.insert('J', jokers);
+        }
+        
 
         hands.push(Hand {
             cards: hand_parts[0].chars().collect(),
@@ -52,6 +66,7 @@ fn main() {
     while index < hands.len() {
         let hand = &hands[index];
         score += (index + 1) * hand.bid;
+        println!("{index}. {} => {}", hand.cards, rate_map(&hand));
         index += 1;
     }
 
@@ -90,19 +105,19 @@ fn find_keys_for_value<'a>(map: &'a HashMap<char, u8>, value: u8) -> usize {
 
 fn get_score_for_character(character: char) -> u8 {
     match character {
-        'A' => 13,
-        'K' => 12,
-        'Q' => 11,
-        'J' => 10,
-        'T' => 9,
-        '9' => 8,
-        '8' => 7,
-        '7' => 6,
-        '6' => 5,
-        '5' => 4,
-        '4' => 3,
-        '3' => 2,
-        '2' => 1,
+        'A' => 14,
+        'K' => 13,
+        'Q' => 12,
+        'T' => 10,
+        '9' => 9,
+        '8' => 8,
+        '7' => 7,
+        '6' => 6,
+        '5' => 5,
+        '4' => 4,
+        '3' => 3,
+        '2' => 2,
+        'J' => 1,
         _ => 0
     }
 }
