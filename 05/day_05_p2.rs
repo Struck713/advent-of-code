@@ -10,11 +10,11 @@ struct Range {
 }
 
 fn main() {
-    let file_path = "day5.input";
+    let file_path = "day5.simple.input";
     let file = fs::read_to_string(file_path).unwrap();
     let lines = file.lines().collect::<Vec<&str>>();
 
-    let mut seeds: Vec<(u64, u64)> = Vec::new();
+    let mut seeds: Vec<(u64, u64, bool)> = Vec::new();
     let seeds_raw = lines[0].split_whitespace()
         .into_iter()
         .skip(1) // skip the "seeds:" part
@@ -23,7 +23,7 @@ fn main() {
 
     let mut index = 0;
     while index < seeds_raw.len() {
-        seeds.push((seeds_raw[index], seeds_raw[index + 1]));
+        seeds.push((seeds_raw[index], seeds_raw[index + 1], false));
         index += 2;
     }
 
@@ -56,44 +56,51 @@ fn main() {
         index += 1;
     }
 
+    process_ranges(&mut maps, &mut seeds, "seed-to-soil map:");
+    process_ranges(&mut maps, &mut seeds, "soil-to-fertilizer map:");
+    process_ranges(&mut maps, &mut seeds, "fertilizer-to-water map:");
+    process_ranges(&mut maps, &mut seeds, "water-to-light map:");
+    process_ranges(&mut maps, &mut seeds, "light-to-temperature map:");
+    process_ranges(&mut maps, &mut seeds, "temperature-to-humidity map:");
+    process_ranges(&mut maps, &mut seeds, "humidity-to-location map:");
+    
     let mut lowest_location_number: u64 = u64::MAX;
     for seed in seeds {
-        let soil = process_ranges(&mut maps, "seed-to-soil map:", seed);
-        let fertil = process_ranges(&mut maps, "soil-to-fertilizer map:", soil);
-        let water = process_ranges(&mut maps, "fertilizer-to-water map:", fertil);
-        let light = process_ranges(&mut maps, "water-to-light map:", water);
-        let temp = process_ranges(&mut maps, "light-to-temperature map:", light);
-        let humid = process_ranges(&mut maps, "temperature-to-humidity map:", temp);
-        let location = process_ranges(&mut maps, "humidity-to-location map:", humid);
-        if location.0 < lowest_location_number {
-            lowest_location_number = location.0;
+        if seed.0 < lowest_location_number {
+            lowest_location_number = seed.0;
         }
     }
 
     println!("Score: {lowest_location_number}");
 }
 
-fn process_ranges<'a>(maps: &mut HashMap<&'a str, Vec<Range>>, name: &'a str, seed: (u64, u64)) -> (u64, u64) {
+fn process_ranges<'a>(maps: &mut HashMap<&'a str, Vec<Range>>, seeds: &mut Vec<(u64, u64, bool)>, name: &'a str) {
     // let mut process = seed;
-    for range in maps.entry(name).or_default() {
-        let seed_process = process_seed(seed, range);
-        if !(seed_process.0 == seed.0 && seed_process.1 == seed.1)  {
-            return seed_process;
+    let mut index = 0;
+    while index < seeds.len() {
+        let seed = seeds[index];
+        for range in maps.entry(name).or_default() {
+            if seed.0 >= range.source && seed.0 < range.source + range.range {
+                // positive: seed.1 > range.range
+                // 0: seed.1 <= range.range
+                
+                let diff = seed.1.saturating_sub(range.range); 
+                if diff == 0 {
+                    seeds[index] = (range.destination + (seed.0 - range.source), seed.1, true);
+                    break;
+                } else {
+                    seeds[index] = (range.destination + (seed.0 - range.source), diff, true);
+                    seeds.push((range.source + range.range, diff, false));
+                    break;
+                }
+            }
         }
+        
+        index += 1;
     }
-    seed
-}
 
-fn process_seed(seed: (u64, u64), range: &Range) -> (u64, u64) {
-    if seed.0 >= range.source {
-        if seed.0 + seed.1 < range.source + range.range {
-            (range.destination + (seed.0 - range.source), seed.1)
-        } else {
-            (range.destination + (seed.0 - range.source), range.range)
-            let new_seed = range.destination + (seed.0 - range.source) + range.range;
-            while ()
-        }
-    } else {
-        seed
+    for index in 0..seeds.len() {
+        seeds[index].2 = false;
     }
+    
 }
