@@ -56,7 +56,7 @@ fn main() {
     let mut score = 0;
     for i in 0..matrix.len() {
         let mut count = 0;
-        for j in 0..matrix[i].len() {
+        for j in (0..matrix[i].len()).rev() {
             let dot = (j, i);
             let symbol = matrix[i][j];
             if points.iter().any(|other| &dot == other) {
