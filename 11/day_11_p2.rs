@@ -17,7 +17,6 @@ fn main() {
     let mut columns: HashSet<usize> = HashSet::new();
     // set of all rows that don't have a hash in them
     let mut rows: HashSet<usize> = HashSet::new();
-
     for row_index in 0..matrix.len() {
         let mut dot_count = 0;
         for column_index in 0..matrix[row_index].len() {
