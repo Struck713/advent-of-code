@@ -43,8 +43,8 @@ fn main() {
             }
         }
     }
-
-    const SIZE_OF_EMPTY: u64 = 2;
+    
+    const SIZE_OF_EMPTY: u64 = 1000000;
     let mut score: u64 = 0;
     for row_index in 0..hashes.len() {
         let (row_1, column_1) = hashes[row_index];
