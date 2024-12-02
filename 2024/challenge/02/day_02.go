@@ -36,10 +36,7 @@ func (Day02) Part1(file *os.File) string {
 		decreasing := false
 
 		for i := 0; i < len(items)-1; i++ {
-			prev := items[i]
-			current := items[i+1]
-
-			diff := current - prev
+			diff := items[i+1] - items[i]
 			if diff >= 0 {
 				increasing = true
 			} else {
@@ -78,15 +75,12 @@ func (Day02) Part2(file *os.File) string {
 			items = append(items, num)
 		}
 
-		points := 0
+		length := len(items)
 		increasing := false
 		decreasing := false
 
 		for i := 0; i < len(items)-1; i++ {
-			prev := items[i]
-			current := items[i+1]
-
-			diff := current - prev
+			diff := items[i+1] - items[i]
 			if diff >= 0 {
 				increasing = true
 			} else {
@@ -94,20 +88,22 @@ func (Day02) Part2(file *os.File) string {
 			}
 
 			if increasing && decreasing {
-				points++
+				items = append(items[:i], items[i+1:]...)
+				i = 0
+				increasing = false
+				decreasing = false
 				continue
 			}
 
 			diffAbs := abs(diff)
 			if diffAbs < 1 || diffAbs > 3 {
-				points++
-				increasing = false
-				decreasing = false
+				items = append(items[:i], items[i+1:]...)
+				i = 0
 				continue
 			}
 		}
 
-		if points <= 1 {
+		if len(items) + 1 < length {
 			total++
 		}
 
