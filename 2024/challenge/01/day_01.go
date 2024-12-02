@@ -1,18 +1,20 @@
-package day01
+package challenge
 
 import (
 	"fmt"
 	"io"
 	"os"
 	"sort"
+	"strconv"
 )
 
-func Run() {
-	file, err := os.Open("01/chal.input")
-	if err != nil {
-		panic("Failed to open challenge input file.")
-	}
+type Day01 struct{}
 
+func (Day01) ID() string {
+	return "01"
+}
+
+func (Day01) LoadValues(file *os.File) ([]uint64, []uint64) {
 	left := make([]uint64, 5)
 	right := make([]uint64, 5)
 
@@ -23,18 +25,12 @@ func Run() {
 			if err == io.EOF {
 				break
 			}
-			fmt.Println("Error reading file:", err)
-			return
+			panic("Failed to read file.")
 		}
 		left = append(left, a)
 		right = append(right, b)
 	}
 
-	Part1(left, right)
-	Part2(left, right)
-}
-
-func Part1(left []uint64, right []uint64) {
 	sort.Slice(left, func(i, j int) bool {
 		return left[i] < left[j]
 	})
@@ -42,6 +38,13 @@ func Part1(left []uint64, right []uint64) {
 	sort.Slice(right, func(i, j int) bool {
 		return right[i] < right[j]
 	})
+
+	return left, right
+}
+
+func (d Day01) Part1(file *os.File) string {
+
+	left, right := d.LoadValues(file)
 
 	total := uint64(0)
 	for index := range left {
@@ -51,10 +54,13 @@ func Part1(left []uint64, right []uint64) {
 		total += sub
 	}
 
-	fmt.Println(total)
+	return strconv.FormatUint(total, 10)
 }
 
-func Part2(left []uint64, right []uint64) {
+func (d Day01) Part2(file *os.File) string {
+
+	left, right := d.LoadValues(file)
+
 	total := uint64(0)
 	for index := range left {
 		a := left[index]
@@ -67,5 +73,5 @@ func Part2(left []uint64, right []uint64) {
 		total += (similarity * a)
 	}
 
-	fmt.Println(total)
+	return strconv.FormatUint(total, 10)
 }
