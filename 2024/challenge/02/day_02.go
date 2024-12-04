@@ -20,6 +20,37 @@ func abs(a int64) int64 {
 	return a * -1
 }
 
+func isIncreasing(vals []int64) int {
+	for i := 0; i < len(vals)-1; i++ {
+		if vals[i+1] <= vals[i] {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func isDecreasing(vals []int64) int {
+	for i := 0; i < len(vals)-1; i++ {
+		if vals[i+1] >= vals[i] {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func isSafe(vals []int64) int {
+	for i := 0; i < len(vals)-1; i++ {
+		diff := abs(vals[i+1] - vals[i])
+		if diff < 1 || diff > 3 {
+			return i
+		}
+	}
+
+	return -1
+}
+
 func (Day02) Part1(file *os.File) string {
 
 	total := 0
@@ -31,31 +62,11 @@ func (Day02) Part1(file *os.File) string {
 			items = append(items, num)
 		}
 
-		safe := true
-		increasing := false
-		decreasing := false
+		safe := isSafe(items)
+		increase := isIncreasing(items)
+		decrease := isDecreasing(items)
 
-		for i := 0; i < len(items)-1; i++ {
-			diff := items[i+1] - items[i]
-			if diff >= 0 {
-				increasing = true
-			} else {
-				decreasing = true
-			}
-
-			if increasing && decreasing {
-				safe = false
-				break
-			}
-
-			diffAbs := abs(diff)
-			if diffAbs < 1 || diffAbs > 3 {
-				safe = false
-				break
-			}
-		}
-
-		if safe {
+		if max(safe, min(increase, decrease)) == -1 {
 			total++
 		}
 
@@ -75,35 +86,10 @@ func (Day02) Part2(file *os.File) string {
 			items = append(items, num)
 		}
 
-		length := len(items)
-		increasing := false
-		decreasing := false
-
-		for i := 0; i < len(items)-1; i++ {
-			diff := items[i+1] - items[i]
-			if diff >= 0 {
-				increasing = true
-			} else {
-				decreasing = true
-			}
-
-			if increasing && decreasing {
-				items = append(items[:i], items[i+1:]...)
-				i = 0
-				increasing = false
-				decreasing = false
-				continue
-			}
-
-			diffAbs := abs(diff)
-			if diffAbs < 1 || diffAbs > 3 {
-				items = append(items[:i], items[i+1:]...)
-				i = 0
-				continue
-			}
-		}
-
-		if len(items) + 1 < length {
+		safe := isSafe(items)
+		increase := isIncreasing(items)
+		decrease := isDecreasing(items)
+		if max(safe, min(increase, decrease)) == -1 {
 			total++
 		}
 
