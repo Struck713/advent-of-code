@@ -8,7 +8,8 @@ import (
 	// day04 "nstruck.dev/advent-of-code/challenge/04"
 	// day05 "nstruck.dev/advent-of-code/challenge/05"
 	// day06 "nstruck.dev/advent-of-code/challenge/06"
-	day07 "nstruck.dev/advent-of-code/challenge/07"
+	// day07 "nstruck.dev/advent-of-code/challenge/07"
+	day09 "nstruck.dev/advent-of-code/challenge/09"
 )
 
 func main() {
@@ -18,5 +19,5 @@ func main() {
 	// challenge.Run(day04.Day04{})
 	// challenge.Run(day05.Day05{})
 	// challenge.Run(day06.Day06{})
-	challenge.Run(day07.Day07{})
+	challenge.Run(day09.Day09{})
 }
