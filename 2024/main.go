@@ -2,7 +2,7 @@ package main
 
 import (
 	"nstruck.dev/advent-of-code/challenge"
-	day10 "nstruck.dev/advent-of-code/challenge/10"
+	day11 "nstruck.dev/advent-of-code/challenge/11"
 )
 
 func main() {
@@ -12,5 +12,5 @@ func main() {
 	// challenge.Run(day04.Day04{})
 	// challenge.Run(day05.Day05{})
 	// challenge.Run(day06.Day06{})
-	challenge.Run(day10.Day10{})
+	challenge.Run(day11.Day11{})
 }

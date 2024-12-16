@@ -17,23 +17,24 @@ func inbounds(matrix [][]int, x int, y int) bool {
 	return x >= 0 && x < len(matrix[0]) && y >= 0 && y < len(matrix)
 }
 
-func scoreTrail(matrix [][]int, x int, y int, last int) int {
+func scoreTrail(matrix [][]int, x int, y int, next int) int {
 	if !inbounds(matrix, x, y) {
 		return 0
 	}
 
 	digit := matrix[y][x]
-	if last+1 != digit {
+	if next != digit {
 		return 0
 	}
+	
 	if digit == 9 {
 		return 1
 	}
 
-	return scoreTrail(matrix, x+1, y, digit) +
-		scoreTrail(matrix, x-1, y, digit) +
-		scoreTrail(matrix, x, y+1, digit) +
-		scoreTrail(matrix, x, y-1, digit)
+	return scoreTrail(matrix, x+1, y, next+1) +
+		scoreTrail(matrix, x-1, y, next+1) +
+		scoreTrail(matrix, x, y+1, next+1) +
+		scoreTrail(matrix, x, y-1, next+1)
 
 }
 
@@ -51,10 +52,10 @@ func (Day10) Part1(file *os.File) string {
 	}
 
 	total = 0
-	for x, row := range matrix {
-		for y, value := range row {
+	for y, row := range matrix {
+		for x, value := range row {
 			if value == 0 {
-				score := scoreTrail(matrix, x, y, -1)
+				score := scoreTrail(matrix, x, y, 0)
 				total += score
 				fmt.Println(score)
 			}
